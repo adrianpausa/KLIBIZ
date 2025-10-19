@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KLIBIZ - Universitätsmedizin Rostock</title>
+<style>
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: linear-gradient(135deg, #e20074 0%, #c1005f 100%);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.container {
+  max-width: 1200px;
+  width: 100%;
+}
+
+.header {
+  text-align: center;
+  color: white;
+  margin-bottom: 60px;
+  animation: fadeInDown 0.8s ease;
+}
+
+.header h1 {
+  font-size: 3.5em;
+  margin-bottom: 15px;
+  text-shadow: 0 4px 15px rgba(0,0,0,0.2);
+}
+
+.header .subtitle {
+  font-size: 1.2em;
+  opacity: 0.95;
+  font-weight: 300;
+  letter-spacing: 0.5px;
+}
+
+.header .university {
+  font-size: 1em;
+  opacity: 0.9;
+  margin-top: 8px;
+  font-weight: 400;
+}
+
+.cards {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 30px;
+  margin-top: 40px;
+  max-width: 900px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.card {
+  background: white;
+  border-radius: 20px;
+  padding: 35px 30px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+  position: relative;
+  overflow: hidden;
+  animation: fadeInUp 0.8s ease;
+}
+
+.card:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 8px;
+  background: linear-gradient(90deg, #e20074 0%, #c1005f 100%);
+  transition: height 0.4s ease;
+}
+
+.card:hover {
+  transform: translateY(-15px) scale(1.02);
+  box-shadow: 0 30px 80px rgba(0,0,0,0.4);
+}
+
+.card:hover::before {
+  height: 100%;
+  opacity: 0.05;
+}
+
+.card-icon {
+  font-size: 3.5em;
+  margin-bottom: 20px;
+  display: inline-block;
+  transition: transform 0.3s ease;
+}
+
+.card:hover .card-icon {
+  transform: scale(1.1) rotate(5deg);
+}
+
+.card h2 {
+  font-size: 1.5em;
+  color: #333;
+  margin-bottom: 12px;
+  font-weight: 600;
+}
+
+.card .role {
+  font-size: 0.9em;
+  color: #e20074;
+  font-weight: 600;
+  margin-bottom: 15px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.card p {
+  color: #666;
+  line-height: 1.6;
+  font-size: 0.95em;
+  margin-bottom: 20px;
+}
+
+.card .features {
+  text-align: left;
+  margin: 20px 0;
+  padding: 15px;
+  background: #f8f9fa;
+  border-radius: 12px;
+}
+
+.card .features li {
+  margin: 8px 0;
+  color: #555;
+  font-size: 0.85em;
+  list-style: none;
+  padding-left: 22px;
+  position: relative;
+}
+
+.card .features li::before {
+  content: "✓";
+  position: absolute;
+  left: 0;
+  color: #4caf50;
+  font-weight: bold;
+  font-size: 1.2em;
+}
+
+.btn {
+  display: inline-block;
+  padding: 12px 32px;
+  background: linear-gradient(135deg, #e20074 0%, #c1005f 100%);
+  color: white;
+  text-decoration: none;
+  border-radius: 50px;
+  font-weight: 600;
+  font-size: 1em;
+  transition: all 0.3s ease;
+  box-shadow: 0 8px 20px rgba(226, 0, 116, 0.3);
+  border: none;
+  cursor: pointer;
+}
+
+.btn:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 30px rgba(226, 0, 116, 0.5);
+}
+
+.btn:active {
+  transform: translateY(-1px);
+}
+
+.footer {
+  text-align: center;
+  color: white;
+  margin-top: 60px;
+  opacity: 0.9;
+  animation: fadeIn 1s ease 0.5s both;
+}
+
+.footer p {
+  margin: 8px 0;
+  font-size: 0.95em;
+}
+
+@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@media (max-width: 900px) {
+  .cards {
+    grid-template-columns: 1fr;
+    gap: 25px;
+  }
+  
+  .header h1 {
+    font-size: 2.5em;
+  }
+  
+  .card {
+    padding: 30px 25px;
+  }
+}
+
+/* Demo Banner */
+.demo-banner {
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(10px);
+  color: white;
+  padding: 12px 20px;
+  border-radius: 12px;
+  margin-bottom: 30px;
+  text-align: center;
+  font-size: 0.95em;
+  animation: fadeIn 1s ease;
+}
+
+.demo-banner strong {
+  font-weight: 600;
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+  <div class="header">
+    <h1>🏥 KLIBIZ</h1>
+    <div class="subtitle">Klinisches Informations- und Beratungszentrum für Pflege</div>
+    <div class="university">Universitätsmedizin Rostock</div>
+  </div>
+
+  <div class="demo-banner">
+    <strong>🎯 Demo-Version</strong> • Wählen Sie Ihren Zugang
+  </div>
+
+  <div class="cards">
+    <!-- Pflegekräfte Dashboard -->
+    <div class="card" onclick="openDashboard()">
+      <div class="card-icon">👨‍⚕️</div>
+      <div class="role">Für Pflegekräfte</div>
+      <h2>KLIBIZ Dashboard</h2>
+      <p>Professionelles Betreuungssystem für die Telepflege nach Krankenhausentlassung</p>
+      
+      <div class="features">
+        <ul>
+          <li>Patientenübersicht & Risiko-Monitoring</li>
+          <li>Chat, Telefon & Video-Beratung</li>
+          <li>Abrechnungsfähige Dokumentation</li>
+          <li>PEGASOS-Integration</li>
+          <li>Qualitäts-KPIs & Outcome-Tracking</li>
+        </ul>
+      </div>
+      
+      <button class="btn">Zum Dashboard →</button>
+    </div>
+
+    <!-- Patienten-App -->
+    <div class="card" onclick="openPatientApp()">
+      <div class="card-icon">👤</div>
+      <div class="role">Für Patienten</div>
+      <h2>Patienten-App</h2>
+      <p>Ihre digitale Unterstützung zu Hause nach dem Krankenhausaufenthalt</p>
+      
+      <div class="features">
+        <ul>
+          <li>Direkter Kontakt zu Pflegekräften</li>
+          <li>Gesundheitstagebuch & Selbstkontrolle</li>
+          <li>Medikamentenplan & Erinnerungen</li>
+          <li>Lernvideos & Krankheitsinformationen</li>
+          <li>Notfall-Nummern & Warnsignale</li>
+        </ul>
+      </div>
+      
+      <button class="btn">Zur Patienten-App →</button>
+    </div>
+  </div>
+
+  <div class="footer">
+    <p><strong>KLIBIZ</strong> - Innovative Telepflege für bessere Gesundheitsversorgung</p>
+    <p style="margin-top: 20px; font-size: 0.85em; opacity: 0.8;">
+      📞 Kontakt: 0381 494-12345 • 📧 klibiz@med.uni-rostock.de
+    </p>
+  </div>
+</div>
+
+<script>
+function openDashboard() {
+  // In einer echten Implementierung würde hier die Navigation zum Dashboard erfolgen
+  alert('🎯 Navigation zum KLIBIZ Dashboard\n\nHier würden Sie zur Dashboard-Anwendung für Pflegekräfte weitergeleitet.\n\nFunktionen:\n• Patientenverwaltung\n• Kommunikation (Chat/Telefon/Video)\n• Dokumentation & Abrechnung\n• Qualitätsmanagement');
+  
+  // Für Demo: Link zum Dashboard
+  // window.location.href = 'klibiz-dashboard.html';
+}
+
+function openPatientApp() {
+  // In einer echten Implementierung würde hier die Navigation zur Patienten-App erfolgen
+  alert('🎯 Navigation zur Patienten-App\n\nHier würden Sie zur Patienten-Anwendung weitergeleitet.\n\nFunktionen:\n• Kontakt zu KLIBIZ-Team\n• Tagebuch & Gewichtskontrolle\n• Medikamentenplan\n• Lernvideos\n• Notfall-Informationen');
+  
+  // Für Demo: Link zur Patienten-App
+  // window.location.href = 'klibiz-patient-app.html';
+}
+
+// Easter Egg: Tastenkombinationen
+document.addEventListener('keydown', (e) => {
+  // D für Dashboard
+  if (e.key === 'd' || e.key === 'D') {
+    openDashboard();
+  }
+  // P für Patient
+  if (e.key === 'p' || e.key === 'P') {
+    openPatientApp();
+  }
+});
+
+// Begrüßung in der Konsole
+console.log('%c🏥 KLIBIZ - Universitätsmedizin Rostock', 'font-size: 20px; font-weight: bold; color: #e20074;');
+console.log('%cWillkommen im KLIBIZ System!', 'font-size: 14px; color: #666;');
+console.log('%cTastenkombinationen: D = Dashboard | P = Patienten-App', 'font-size: 12px; color: #999;');
+</script>
+
+</body>
+</html>
