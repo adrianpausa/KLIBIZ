@@ -1,0 +1,741 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NetNurse - Universitätsmedizin Rostock</title>
+<style>
+* {box-sizing: border-box; margin: 0; padding: 0;}
+body {font-family: 'Segoe UI', sans-serif; background: linear-gradient(135deg, #e20074 0%, #c1005f 100%); min-height: 100vh;}
+
+.header {background: white; padding: 15px 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); display: flex; justify-content: space-between; align-items: center;}
+.header h1 {font-size: 1.3em; color: #333;}
+.header-subtitle {font-size: 0.7em; color: #666; margin-top: 3px;}
+.avatar {width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, #e20074 0%, #c1005f 100%); color: white; display: flex; align-items: center; justify-content: center; font-weight: bold;}
+
+.container {max-width: 600px; margin: 0 auto; padding: 20px;}
+
+.welcome {text-align: center; color: white; padding: 40px 20px;}
+.welcome h2 {font-size: 2em; margin-bottom: 10px; text-shadow: 0 2px 10px rgba(0,0,0,0.2);}
+.welcome p {font-size: 1.1em; opacity: 0.9; margin-bottom: 20px;}
+
+.status-card {background: white; border-radius: 15px; padding: 15px; margin: 20px 0; box-shadow: 0 5px 20px rgba(0,0,0,0.2); display: flex; align-items: center; gap: 12px;}
+.status-card button {background: linear-gradient(135deg, #e20074 0%, #c1005f 100%); color: white; border: none; padding: 10px 16px; border-radius: 10px; cursor: pointer; font-weight: 600;}
+
+.grid {display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; margin-top: 30px;}
+.card {background: white; border-radius: 20px; padding: 30px 15px; cursor: pointer; box-shadow: 0 10px 30px rgba(0,0,0,0.2); transition: all 0.3s; text-align: center; position: relative;}
+.card:hover {transform: translateY(-5px); box-shadow: 0 15px 40px rgba(0,0,0,0.3);}
+.card-icon {font-size: 2.8em; margin-bottom: 10px;}
+.card-title {font-size: 1.1em; font-weight: 600; margin-bottom: 5px; color: #333;}
+.card-desc {font-size: 0.8em; color: #666;}
+
+.badge {position: absolute; top: -5px; right: -5px; background: #ff4444; color: white; border-radius: 50%; width: 20px; height: 20px; font-size: 0.7em; display: flex; align-items: center; justify-content: center; font-weight: bold;}
+
+.screen {display: none;}
+.screen.active {display: block;}
+
+.back-btn {background: white; border: none; border-radius: 12px; padding: 12px 20px; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; font-size: 1em; font-weight: 600; color: #e20074; margin-bottom: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.1);}
+
+.content-box {background: white; border-radius: 20px; padding: 25px; box-shadow: 0 10px 40px rgba(0,0,0,0.2); max-height: calc(100vh - 200px); overflow-y: auto;}
+.content-box h3 {font-size: 1.5em; color: #333; margin-bottom: 20px;}
+
+.task-item {background: white; border: 2px solid #e0e0e0; border-radius: 15px; padding: 18px; margin-bottom: 15px; position: relative; cursor: pointer; transition: all 0.2s;}
+.task-item:hover {border-color: #e20074;}
+.task-item.completed {opacity: 0.6; border-color: #4caf50;}
+.task-check {position: absolute; top: 18px; right: 18px; width: 24px; height: 24px; border: 2px solid #e20074; border-radius: 50%; display: flex; align-items: center; justify-content: center;}
+.task-item.completed .task-check {background: #4caf50; border-color: #4caf50; color: white;}
+.task-title {font-size: 1.1em; font-weight: 600; margin-bottom: 8px; padding-right: 40px;}
+.task-desc {color: #666; font-size: 0.9em; margin-bottom: 5px;}
+.task-meta {font-size: 0.75em; color: #999;}
+
+.video-card {background: white; border: 2px solid #e0e0e0; border-radius: 15px; overflow: hidden; margin-bottom: 15px; cursor: pointer; transition: all 0.2s;}
+.video-card:hover {border-color: #e20074; transform: translateY(-3px);}
+.video-thumb {width: 100%; height: 180px; background: linear-gradient(135deg, #e20074 0%, #c1005f 100%); position: relative; display: flex; align-items: center; justify-content: center;}
+.video-thumb img {width: 100%; height: 100%; object-fit: cover;}
+.play-btn {position: absolute; width: 60px; height: 60px; background: rgba(255,255,255,0.9); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.8em; color: #e20074;}
+.video-info {padding: 15px;}
+.video-title {font-weight: 600; margin-bottom: 5px;}
+.video-meta {font-size: 0.8em; color: #999;}
+
+.chat-box {background: white; border-radius: 20px; overflow: hidden; box-shadow: 0 10px 40px rgba(0,0,0,0.2); height: 600px; display: flex; flex-direction: column;}
+.chat-header {background: linear-gradient(135deg, #e20074 0%, #c1005f 100%); color: white; padding: 20px;}
+.chat-messages {flex: 1; padding: 20px; overflow-y: auto; background: #f8f9fa;}
+.message {margin-bottom: 15px; max-width: 75%;}
+.message.sent {margin-left: auto; text-align: right;}
+.message-bubble {padding: 12px 16px; border-radius: 18px; display: inline-block;}
+.message.sent .message-bubble {background: linear-gradient(135deg, #e20074 0%, #c1005f 100%); color: white;}
+.message.received .message-bubble {background: white; box-shadow: 0 2px 8px rgba(0,0,0,0.1);}
+.chat-input {padding: 15px; background: white; border-top: 1px solid #e0e0e0; display: flex; gap: 10px;}
+.chat-input input {flex: 1; padding: 12px 16px; border: 1px solid #e0e0e0; border-radius: 25px; font-size: 1em;}
+.chat-input button {background: linear-gradient(135deg, #e20074 0%, #c1005f 100%); color: white; border: none; width: 40px; height: 40px; border-radius: 50%; cursor: pointer;}
+
+.form-group {margin-bottom: 20px;}
+.form-label {display: block; margin-bottom: 8px; font-weight: 600; color: #333;}
+.form-input, .form-select {width: 100%; padding: 12px; border: 2px solid #e0e0e0; border-radius: 10px; font-size: 1em; font-family: inherit;}
+.form-textarea {width: 100%; padding: 12px; border: 2px solid #e0e0e0; border-radius: 10px; min-height: 100px; font-size: 1em; font-family: inherit;}
+.btn-primary {background: linear-gradient(135deg, #e20074 0%, #c1005f 100%); color: white; border: none; padding: 12px 24px; border-radius: 12px; font-size: 1em; font-weight: 600; cursor: pointer; width: 100%; transition: all 0.2s;}
+.btn-primary:hover {transform: translateY(-2px); box-shadow: 0 5px 15px rgba(226,0,116,0.4);}
+.btn-secondary {background: white; color: #e20074; border: 2px solid #e20074; padding: 12px 24px; border-radius: 12px; font-size: 1em; font-weight: 600; cursor: pointer; width: 100%; transition: all 0.2s;}
+
+.mood-select {display: flex; gap: 15px; justify-content: space-around; font-size: 2.5em; margin: 20px 0;}
+.mood-select span {cursor: pointer; opacity: 0.3; transition: opacity 0.2s;}
+.mood-select span.selected {opacity: 1;}
+
+.answer-grid {display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px;}
+.answer-btn {padding: 12px; border: 2px solid #e0e0e0; border-radius: 12px; background: white; cursor: pointer; transition: all 0.2s; font-size: 0.9em;}
+.answer-btn:hover {border-color: #e20074;}
+.answer-btn.selected {border-color: #e20074; background: #fff5fb; font-weight: 600;}
+
+.measurement-grid {display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; margin: 20px 0;}
+.measurement-card {background: #f8f9fa; border-radius: 12px; padding: 20px; text-align: center; cursor: pointer; transition: all 0.2s; border: 2px solid transparent;}
+.measurement-card:hover {border-color: #e20074; transform: translateY(-3px);}
+.measurement-icon {font-size: 2.5em; margin-bottom: 10px;}
+.measurement-label {font-size: 0.9em; color: #666; margin-bottom: 5px;}
+.measurement-value {font-size: 1.5em; font-weight: bold; color: #333;}
+.measurement-date {font-size: 0.75em; color: #999; margin-top: 5px;}
+
+.appointment-card {background: white; border-left: 4px solid #e20074; border-radius: 12px; padding: 18px; margin-bottom: 15px; box-shadow: 0 2px 10px rgba(0,0,0,0.05);}
+.appointment-title {font-weight: 600; font-size: 1.1em; margin-bottom: 8px;}
+.appointment-details {color: #666; font-size: 0.9em; line-height: 1.6;}
+
+.modal {display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; justify-content: center; align-items: center; padding: 20px;}
+.modal.active {display: flex;}
+.modal-content {background: white; border-radius: 20px; padding: 30px; max-width: 600px; width: 100%; max-height: 90vh; overflow-y: auto;}
+.modal-header {display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;}
+.modal-header h3 {color: #333;}
+.close-modal {background: none; border: none; font-size: 1.8em; cursor: pointer; color: #999;}
+.modal-footer {display: flex; gap: 10px; margin-top: 20px;}
+
+.info-box {background: #e3f2fd; border-left: 4px solid #2196f3; padding: 15px; border-radius: 8px; margin: 15px 0; font-size: 0.9em;}
+.success-box {background: #e8f5e9; border-left: 4px solid #4caf50; padding: 15px; border-radius: 8px; margin: 15px 0;}
+.warning-box {background: #fff3e0; border-left: 4px solid #ff9800; padding: 15px; border-radius: 8px; margin: 15px 0;}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div>
+    <h1>🏥 NetNurse</h1>
+    <div class="header-subtitle">Universitätsmedizin Rostock</div>
+  </div>
+  <div class="avatar">MM</div>
+</div>
+
+<div class="container">
+  <!-- Welcome Screen -->
+  <div id="welcomeScreen" class="screen active">
+    <div class="welcome">
+      <h2>Willkommen, Maria! 👋</h2>
+      <p>Ihre Pflegekraft ist für Sie da</p>
+      
+      <div class="status-card">
+        <div style="font-size: 2em;">💚</div>
+        <div style="flex: 1; text-align: left;">
+          <div style="font-weight: 600; color: #333;">Gesundheitsstatus: Stabil</div>
+          <div style="font-size: 0.85em; color: #666;">Risiko-Score: 35 (Niedrig)</div>
+        </div>
+        <button onclick="showScreen('symptoms')">Check-up</button>
+      </div>
+      
+      <div class="grid">
+        <div class="card" onclick="showScreen('chat')">
+          <span class="badge">1</span>
+          <div class="card-icon">💬</div>
+          <div class="card-title">Verbinden</div>
+          <div class="card-desc">Chat & Anruf</div>
+        </div>
+        
+        <div class="card" onclick="showScreen('health')">
+          <div class="card-icon">❤️</div>
+          <div class="card-title">Gesundheit</div>
+          <div class="card-desc">Werte & Verlauf</div>
+        </div>
+        
+        <div class="card" onclick="showScreen('tasks')">
+          <span class="badge" id="taskBadge">3</span>
+          <div class="card-icon">✅</div>
+          <div class="card-title">Aufgaben</div>
+          <div class="card-desc">Meine To-Dos</div>
+        </div>
+        
+        <div class="card" onclick="showScreen('learning')">
+          <div class="card-icon">🎓</div>
+          <div class="card-title">Lernen</div>
+          <div class="card-desc">Videos & Tipps</div>
+        </div>
+        
+        <div class="card" onclick="showScreen('appointments')">
+          <span class="badge">2</span>
+          <div class="card-icon">📅</div>
+          <div class="card-title">Termine</div>
+          <div class="card-desc">Arzttermine</div>
+        </div>
+        
+        <div class="card" onclick="showScreen('medication')">
+          <div class="card-icon">💊</div>
+          <div class="card-title">Medikamente</div>
+          <div class="card-desc">Mein Plan</div>
+        </div>
+        
+        <div class="card" onclick="showEmergency()" style="border: 2px solid #ff4444;">
+          <div class="card-icon" style="color: #ff4444;">🚨</div>
+          <div class="card-title" style="color: #ff4444;">Notfall</div>
+          <div class="card-desc">Sofort-Kontakt</div>
+        </div>
+        
+        <div class="card" onclick="showScreen('progress')">
+          <div class="card-icon">📊</div>
+          <div class="card-title">Fortschritt</div>
+          <div class="card-desc">Meine Erfolge</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Chat Screen -->
+  <div id="chatScreen" class="screen">
+    <button class="back-btn" onclick="showScreen('welcome')">← Zurück</button>
+    <div class="chat-box">
+      <div class="chat-header">
+        <h3>M. Mühlbach</h3>
+        <small>🟢 Online - Pflegeexpertin Telepflege</small>
+      </div>
+      <div class="chat-messages" id="chatMessages"></div>
+      <div class="chat-input">
+        <input type="text" id="chatInput" placeholder="Nachricht eingeben...">
+        <button onclick="sendMessage()">➤</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Health/Werte Screen -->
+  <div id="healthScreen" class="screen">
+    <button class="back-btn" onclick="showScreen('welcome')">← Zurück</button>
+    <div class="content-box">
+      <h3>❤️ Meine Gesundheitswerte</h3>
+      
+      <div class="measurement-grid">
+        <div class="measurement-card" onclick="showAddValueModal('bloodPressure')">
+          <div class="measurement-icon">❤️</div>
+          <div class="measurement-label">Blutdruck</div>
+          <div class="measurement-value" id="bpValue">125/80</div>
+          <div class="measurement-date" id="bpDate">Heute, 08:30</div>
+        </div>
+        
+        <div class="measurement-card" onclick="showAddValueModal('weight')">
+          <div class="measurement-icon">⚖️</div>
+          <div class="measurement-label">Gewicht</div>
+          <div class="measurement-value" id="weightValue">68.5 kg</div>
+          <div class="measurement-date" id="weightDate">Heute, 07:00</div>
+        </div>
+        
+        <div class="measurement-card" onclick="showAddValueModal('temperature')">
+          <div class="measurement-icon">🌡️</div>
+          <div class="measurement-label">Temperatur</div>
+          <div class="measurement-value" id="tempValue">36.6°C</div>
+          <div class="measurement-date" id="tempDate">Gestern, 20:00</div>
+        </div>
+        
+        <div class="measurement-card" onclick="showAddValueModal('pulse')">
+          <div class="measurement-icon">💓</div>
+          <div class="measurement-label">Puls</div>
+          <div class="measurement-value" id="pulseValue">72 bpm</div>
+          <div class="measurement-date" id="pulseDate">Heute, 08:30</div>
+        </div>
+      </div>
+      
+      <button class="btn-primary" onclick="showAddValueModal('custom')" style="margin-top: 20px;">+ Wert hinzufügen</button>
+      
+      <div class="info-box" style="margin-top: 20px;">
+        <strong>💡 Hinweis:</strong> Ihre Messwerte werden automatisch an Ihre Pflegekraft M. Mühlbach übermittelt.
+      </div>
+    </div>
+  </div>
+
+  <!-- Symptoms Check Screen -->
+  <div id="symptomsScreen" class="screen">
+    <button class="back-btn" onclick="showScreen('welcome')">← Zurück</button>
+    <div class="content-box">
+      <h3>🩺 Täglicher Gesundheits-Check</h3>
+      <p style="color: #666; margin-bottom: 20px;">Bitte beantworten Sie folgende Fragen zu Ihrem Befinden</p>
+      
+      <div class="form-group">
+        <label class="form-label">Wie geht es Ihnen heute?</label>
+        <div class="mood-select">
+          <span onclick="selectMood(this, 'gut')">😊</span>
+          <span onclick="selectMood(this, 'ok')">😐</span>
+          <span onclick="selectMood(this, 'schlecht')">😟</span>
+          <span onclick="selectMood(this, 'sehr_schlecht')">😢</span>
+        </div>
+      </div>
+      
+      <div class="form-group">
+        <label class="form-label">Hatten Sie heute Atemnot?</label>
+        <div class="answer-grid">
+          <button class="answer-btn" onclick="selectAnswer(this, 'breathlessness', 'none')">Nein</button>
+          <button class="answer-btn" onclick="selectAnswer(this, 'breathlessness', 'light')">Leicht</button>
+          <button class="answer-btn" onclick="selectAnswer(this, 'breathlessness', 'medium')">Mittel</button>
+          <button class="answer-btn" onclick="selectAnswer(this, 'breathlessness', 'severe')">Stark</button>
+        </div>
+      </div>
+      
+      <div class="form-group">
+        <label class="form-label">Schwellungen an Beinen/Füßen?</label>
+        <div class="answer-grid" style="grid-template-columns: 1fr 1fr;">
+          <button class="answer-btn" onclick="selectAnswer(this, 'swelling', 'no')">❌ Nein</button>
+          <button class="answer-btn" onclick="selectAnswer(this, 'swelling', 'yes')">✅ Ja</button>
+        </div>
+      </div>
+      
+      <div class="form-group">
+        <label class="form-label">Trinkmenge heute (ml)</label>
+        <input type="number" class="form-input" id="fluidIntake" placeholder="z.B. 1200">
+      </div>
+      
+      <div class="form-group">
+        <label class="form-label">Alle Medikamente eingenommen?</label>
+        <div class="answer-grid" style="grid-template-columns: 1fr 1fr;">
+          <button class="answer-btn" onclick="selectAnswer(this, 'medication', 'yes')">✅ Ja</button>
+          <button class="answer-btn" onclick="selectAnswer(this, 'medication', 'no')">❌ Nein</button>
+        </div>
+      </div>
+      
+      <div class="form-group">
+        <label class="form-label">Zusätzliche Anmerkungen</label>
+        <textarea class="form-textarea" id="notes" placeholder="Gibt es sonst etwas zu berichten?"></textarea>
+      </div>
+      
+      <button class="btn-primary" onclick="submitCheck()">✅ Check-up absenden</button>
+    </div>
+  </div>
+
+  <!-- Tasks Screen -->
+  <div id="tasksScreen" class="screen">
+    <button class="back-btn" onclick="showScreen('welcome')">← Zurück</button>
+    <div class="content-box">
+      <h3>✅ Meine Aufgaben</h3>
+      <p style="color: #666; margin-bottom: 20px;">Von Pflegekraft M. Mühlbach zugewiesen</p>
+      <div id="taskList"></div>
+    </div>
+  </div>
+
+  <!-- Learning Screen -->
+  <div id="learningScreen" class="screen">
+    <button class="back-btn" onclick="showScreen('welcome')">← Zurück</button>
+    <div class="content-box">
+      <h3>🎓 Lernen & Verstehen</h3>
+      <p style="color: #666; margin-bottom: 20px;">Wissenswertes über Ihre Herzinsuffizienz</p>
+      <div id="videoList"></div>
+    </div>
+  </div>
+
+  <!-- Appointments Screen -->
+  <div id="appointmentsScreen" class="screen">
+    <button class="back-btn" onclick="showScreen('welcome')">← Zurück</button>
+    <div class="content-box">
+      <h3>📅 Meine Arzttermine</h3>
+      
+      <div class="success-box">
+        <strong>📅 Nächster Termin:</strong>
+        <div style="margin-top: 10px;">
+          <strong>Zentrum für Innere Medizin - Kardiologie</strong><br>
+          Morgen, 19.10.2025 um 10:30 Uhr<br>
+          Ernst-Heydemann-Straße 6, 18057 Rostock
+        </div>
+      </div>
+      
+      <div class="appointment-card">
+        <div class="appointment-title">Orthopädische Klinik</div>
+        <div class="appointment-details">
+          📅 25.10.2025 um 14:00 Uhr<br>
+          📍 Doberaner Straße 142, 18057 Rostock<br>
+          📋 Nachkontrolle Kniegelenk
+        </div>
+      </div>
+      
+      <button class="btn-primary" onclick="showRequestAppointmentModal()">+ Termin anfragen</button>
+    </div>
+  </div>
+
+  <!-- Medication Screen -->
+  <div id="medicationScreen" class="screen">
+    <button class="back-btn" onclick="showScreen('welcome')">← Zurück</button>
+    <div class="content-box">
+      <h3>💊 Mein Medikamentenplan</h3>
+      
+      <div class="info-box">
+        <strong>ℹ️ Wichtig:</strong> Dieser Plan wurde von Ihrem Arzt erstellt. Ändern Sie nichts ohne Rücksprache!
+      </div>
+      
+      <div style="background: #f8f9fa; padding: 15px; border-radius: 12px; margin: 15px 0;">
+        <strong>Torasemid 10mg</strong>
+        <p style="color: #666; font-size: 0.9em; margin: 5px 0;">🌅 Morgens, vor dem Frühstück</p>
+        <p style="font-size: 0.8em; color: #999;">Diuretikum - Entwässerung</p>
+      </div>
+      
+      <div style="background: #f8f9fa; padding: 15px; border-radius: 12px; margin: 15px 0;">
+        <strong>Ramipril 5mg</strong>
+        <p style="color: #666; font-size: 0.9em; margin: 5px 0;">🌅 Morgens, vor dem Frühstück</p>
+        <p style="font-size: 0.8em; color: #999;">ACE-Hemmer - Herzschutz</p>
+      </div>
+      
+      <div style="background: #f8f9fa; padding: 15px; border-radius: 12px; margin: 15px 0;">
+        <strong>Bisoprolol 2,5mg</strong>
+        <p style="color: #666; font-size: 0.9em; margin: 5px 0;">🌅 Morgens, vor dem Frühstück</p>
+        <p style="font-size: 0.8em; color: #999;">Betablocker - Herzentlastung</p>
+      </div>
+      
+      <div style="margin-top: 20px; padding: 15px; background: #f8f9fa; border-radius: 12px;">
+        <strong>📋 Verordnet von:</strong><br>
+        Dr. med. Schmidt, Innere Medizin<br>
+        Universitätsmedizin Rostock<br>
+        <span style="font-size: 0.9em; color: #666;">Erstellt am: 14.10.2025</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Progress Screen -->
+  <div id="progressScreen" class="screen">
+    <button class="back-btn" onclick="showScreen('welcome')">← Zurück</button>
+    <div class="content-box">
+      <h3>📊 Mein Fortschritt & Erfolge</h3>
+      
+      <div style="background: linear-gradient(135deg, #e20074 0%, #c1005f 100%); color: white; border-radius: 15px; padding: 25px; margin: 20px 0; text-align: center;">
+        <div style="font-size: 3em;">🏆</div>
+        <h4 style="margin: 10px 0;">Glückwunsch!</h4>
+        <p>Sie sind seit <strong>4 Tagen</strong> zu Hause ohne Komplikationen</p>
+      </div>
+      
+      <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin: 20px 0;">
+        <div style="text-align: center; background: #f8f9fa; padding: 15px; border-radius: 12px;">
+          <div style="font-size: 2em; font-weight: bold; color: #4caf50;">98%</div>
+          <div style="font-size: 0.85em; color: #666;">Medikamenten-Treue</div>
+        </div>
+        <div style="text-align: center; background: #f8f9fa; padding: 15px; border-radius: 12px;">
+          <div style="font-size: 2em; font-weight: bold; color: #2196f3;">5/7</div>
+          <div style="font-size: 0.85em; color: #666;">Aufgaben</div>
+        </div>
+        <div style="text-align: center; background: #f8f9fa; padding: 15px; border-radius: 12px;">
+          <div style="font-size: 2em; font-weight: bold; color: #ff9800;">4</div>
+          <div style="font-size: 0.85em; color: #666;">Check-ups</div>
+        </div>
+      </div>
+      
+      <h4 style="margin: 25px 0 15px 0;">🎖️ Ihre Erfolge</h4>
+      <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px;">
+        <div style="background: #e8f5e9; border-radius: 12px; padding: 20px; text-align: center;">
+          <div style="font-size: 3em;">⚖️</div>
+          <strong style="color: #2e7d32;">Gewichts-Profi</strong>
+          <p style="font-size: 0.85em; color: #666; margin-top: 5px;">7 Tage täglich gewogen</p>
+        </div>
+        <div style="background: #e3f2fd; border-radius: 12px; padding: 20px; text-align: center;">
+          <div style="font-size: 3em;">💊</div>
+          <strong style="color: #1976d2;">Medikamenten-Held</strong>
+          <p style="font-size: 0.85em; color: #666; margin-top: 5px;">Keine Einnahme vergessen</p>
+        </div>
+      </div>
+      
+      <div class="warning-box" style="margin-top: 20px;">
+        <strong>💡 Tipp des Tages:</strong>
+        <p style="margin-top: 5px; line-height: 1.6;">Ihre konsequente Gewichtskontrolle hilft, Wassereinlagerungen frühzeitig zu erkennen!</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Add Value Modal -->
+<div class="modal" id="addValueModal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h3>📊 Wert hinzufügen</h3>
+      <button class="close-modal" onclick="closeModal('addValueModal')">×</button>
+    </div>
+    <div>
+      <div class="form-group">
+        <label class="form-label">Messtyp</label>
+        <select class="form-select" id="valueType">
+          <option value="bloodPressure">❤️ Blutdruck</option>
+          <option value="weight">⚖️ Gewicht</option>
+          <option value="temperature">🌡️ Temperatur</option>
+          <option value="pulse">💓 Puls</option>
+          <option value="bloodSugar">🩸 Blutzucker</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Wert</label>
+        <input type="text" class="form-input" id="valueInput" placeholder="z.B. 125/80, 68.5, 36.6, 72">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Notiz (optional)</label>
+        <textarea class="form-textarea" id="valueNote" placeholder="Zusätzliche Anmerkungen..."></textarea>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-secondary" onclick="closeModal('addValueModal')">Abbrechen</button>
+      <button class="btn-primary" onclick="saveValue()">Speichern</button>
+    </div>
+  </div>
+</div>
+
+<!-- Request Appointment Modal -->
+<div class="modal" id="requestAppointmentModal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h3>📅 Termin anfragen</h3>
+      <button class="close-modal" onclick="closeModal('requestAppointmentModal')">×</button>
+    </div>
+    <div>
+      <div class="info-box">
+        <strong>ℹ️ Hinweis:</strong> Ihre Anfrage wird an die Fachabteilung weitergeleitet. Sie erhalten eine Bestätigung.
+      </div>
+      
+      <div class="form-group">
+        <label class="form-label">Klinik/Fachabteilung</label>
+        <select class="form-select" id="appointmentDept">
+          <option value="">-- Bitte wählen --</option>
+          <option value="kardiologie">Zentrum für Innere Medizin - Kardiologie</option>
+          <option value="pneumologie">Zentrum für Innere Medizin - Pneumologie</option>
+          <option value="gastro">Zentrum für Innere Medizin - Gastroenterologie</option>
+          <option value="chirurgie">Klinik für Chirurgie</option>
+          <option value="urologie">Urologische Klinik</option>
+          <option value="dermatologie">Klinik für Dermatologie</option>
+          <option value="hno">Klinik für HNO</option>
+          <option value="augenklinik">Augenklinik</option>
+          <option value="orthopaedie">Orthopädische Klinik</option>
+          <option value="neurologie">Neurologische Klinik</option>
+          <option value="psychiatrie">Klinik für Psychiatrie</option>
+          <option value="frauenklinik">Universitätsfrauenklinik</option>
+        </select>
+      </div>
+      
+      <div class="form-group">
+        <label class="form-label">Wunschtermin (Datum)</label>
+        <input type="date" class="form-input" id="appointmentDate">
+      </div>
+      
+      <div class="form-group">
+        <label class="form-label">Bevorzugte Uhrzeit</label>
+        <select class="form-select" id="appointmentTime">
+          <option value="morning">Vormittags (08:00 - 12:00)</option>
+          <option value="afternoon">Nachmittags (12:00 - 16:00)</option>
+          <option value="any">Keine Präferenz</option>
+        </select>
+      </div>
+      
+      <div class="form-group">
+        <label class="form-label">Grund der Terminanfrage</label>
+        <textarea class="form-textarea" id="appointmentReason" placeholder="z.B. Nachkontrolle, Wundkontrolle, Medikationsanpassung..."></textarea>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-secondary" onclick="closeModal('requestAppointmentModal')">Abbrechen</button>
+      <button class="btn-primary" onclick="submitAppointmentRequest()">Termin anfragen</button>
+    </div>
+  </div>
+</div>
+
+<script>
+let mood = null;
+let answers = {};
+let currentValueType = '';
+
+const tasks = [
+  {id: 1, title: '💊 Medikamente einnehmen', desc: 'Morgenmedikation: Torasemid, Ramipril, Bisoprolol', done: true, assignedBy: 'M. Mühlbach'},
+  {id: 2, title: '⚖️ Gewicht messen', desc: 'Täglich zur gleichen Zeit wiegen', done: true, assignedBy: 'M. Mühlbach'},
+  {id: 3, title: '💧 Trinkmenge dokumentieren', desc: 'Maximal 1500ml pro Tag', done: false, assignedBy: 'M. Mühlbach'},
+  {id: 4, title: '🩺 Gesundheits-Check', desc: 'Täglicher Fragebogen ausfüllen', done: false, assignedBy: 'M. Mühlbach'},
+  {id: 5, title: '❤️ Blutdruck messen', desc: 'Im Sitzen nach 5 Min. Ruhe', done: false, assignedBy: 'M. Mühlbach'}
+];
+
+const videos = [
+  {id: 1, title: 'Leben mit Herzinsuffizienz', duration: '8:45', views: 892},
+  {id: 2, title: 'Richtig Gewicht kontrollieren', duration: '4:30', views: 654},
+  {id: 3, title: 'Salzarme Ernährung praktisch', duration: '12:20', views: 1243},
+  {id: 4, title: 'Trinkmenge richtig dokumentieren', duration: '5:15', views: 432}
+];
+
+const messages = [
+  {from: 'nurse', text: 'Guten Tag Frau Müller! Wie geht es Ihnen heute?', time: '08:00'},
+  {from: 'patient', text: 'Danke, mir geht es gut. Ich habe meine Medikamente genommen.', time: '08:15'},
+  {from: 'nurse', text: 'Das freut mich! Bitte denken Sie auch an das Trinkprotokoll.', time: '08:20'}
+];
+
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id + 'Screen').classList.add('active');
+  
+  if (id === 'tasks') renderTasks();
+  if (id === 'learning') renderVideos();
+  if (id === 'chat') renderChat();
+}
+
+function renderTasks() {
+  const list = document.getElementById('taskList');
+  list.innerHTML = tasks.map(t => `
+    <div class="task-item ${t.done ? 'completed' : ''}" onclick="toggleTask(${t.id})">
+      <div class="task-check">${t.done ? '✓' : ''}</div>
+      <div class="task-title">${t.title}</div>
+      <div class="task-desc">${t.desc}</div>
+      <div class="task-meta">Zugewiesen von: ${t.assignedBy}</div>
+    </div>
+  `).join('');
+  
+  const count = tasks.filter(t => !t.done).length;
+  document.getElementById('taskBadge').textContent = count;
+  document.getElementById('taskBadge').style.display = count > 0 ? 'flex' : 'none';
+}
+
+function toggleTask(id) {
+  const task = tasks.find(t => t.id === id);
+  if (task) {
+    task.done = !task.done;
+    renderTasks();
+  }
+}
+
+function renderVideos() {
+  const list = document.getElementById('videoList');
+  list.innerHTML = videos.map(v => `
+    <div class="video-card" onclick="alert('Video: ${v.title}')">
+      <div class="video-thumb">
+        <div class="play-btn">▶</div>
+      </div>
+      <div class="video-info">
+        <div class="video-title">${v.title}</div>
+        <div class="video-meta">👁️ ${v.views} Aufrufe • ⏱️ ${v.duration}</div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function renderChat() {
+  const box = document.getElementById('chatMessages');
+  box.innerHTML = messages.map(m => `
+    <div class="message ${m.from === 'patient' ? 'sent' : 'received'}">
+      <div class="message-bubble">${m.text}</div>
+    </div>
+  `).join('');
+}
+
+function sendMessage() {
+  const input = document.getElementById('chatInput');
+  if (input.value.trim()) {
+    messages.push({from: 'patient', text: input.value});
+    renderChat();
+    input.value = '';
+  }
+}
+
+function selectMood(el, value) {
+  document.querySelectorAll('.mood-select span').forEach(s => s.classList.remove('selected'));
+  el.classList.add('selected');
+  mood = value;
+}
+
+function selectAnswer(btn, key, value) {
+  btn.parentElement.querySelectorAll('.answer-btn').forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
+  answers[key] = value;
+}
+
+function submitCheck() {
+  if (!mood || !answers.breathlessness || !answers.swelling || !answers.medication) {
+    alert('Bitte beantworten Sie alle Fragen');
+    return;
+  }
+  
+  const urgent = answers.breathlessness === 'severe';
+  
+  if (urgent) {
+    alert('⚠️ Wichtig!\n\nIhre Angaben wurden an Pflegekraft M. Mühlbach weitergeleitet. Sie wird sich umgehend bei Ihnen melden.');
+  } else {
+    alert('✅ Check-up gesendet!\n\nIhr Gesundheits-Check wurde erfolgreich an M. Mühlbach übermittelt.');
+  }
+  
+  showScreen('welcome');
+}
+
+function showEmergency() {
+  alert('🚨 NOTFALL-KONTAKTE\n\n112 - Notruf\n\n0381 494-0 - Universitätsmedizin Rostock Zentrale\n0381 494-8600 - Zentrale Notaufnahme\n\nPflegekraft M. Mühlbach:\nKLIBIZ Telepflege\n📞 Anruf oder 💬 Chat');
+}
+
+function showAddValueModal(type) {
+  currentValueType = type;
+  if (type !== 'custom') {
+    document.getElementById('valueType').value = type;
+  }
+  openModal('addValueModal');
+}
+
+function saveValue() {
+  const type = document.getElementById('valueType').value;
+  const value = document.getElementById('valueInput').value;
+  
+  if (!value) {
+    alert('Bitte geben Sie einen Wert ein');
+    return;
+  }
+  
+  // Update display based on type
+  const now = new Date().toLocaleString('de-DE', {hour: '2-digit', minute: '2-digit'});
+  
+  if (type === 'bloodPressure') {
+    document.getElementById('bpValue').textContent = value;
+    document.getElementById('bpDate').textContent = 'Heute, ' + now;
+  } else if (type === 'weight') {
+    document.getElementById('weightValue').textContent = value + ' kg';
+    document.getElementById('weightDate').textContent = 'Heute, ' + now;
+  } else if (type === 'temperature') {
+    document.getElementById('tempValue').textContent = value + '°C';
+    document.getElementById('tempDate').textContent = 'Heute, ' + now;
+  } else if (type === 'pulse') {
+    document.getElementById('pulseValue').textContent = value + ' bpm';
+    document.getElementById('pulseDate').textContent = 'Heute, ' + now;
+  }
+  
+  alert('✅ Wert gespeichert!\n\nIhr Messwert wurde erfolgreich an M. Mühlbach übermittelt.');
+  closeModal('addValueModal');
+  document.getElementById('valueInput').value = '';
+  document.getElementById('valueNote').value = '';
+}
+
+function showRequestAppointmentModal() {
+  openModal('requestAppointmentModal');
+}
+
+function submitAppointmentRequest() {
+  const dept = document.getElementById('appointmentDept').value;
+  const date = document.getElementById('appointmentDate').value;
+  const reason = document.getElementById('appointmentReason').value;
+  
+  if (!dept || !date || !reason) {
+    alert('Bitte füllen Sie alle Pflichtfelder aus');
+    return;
+  }
+  
+  const deptName = document.getElementById('appointmentDept').options[document.getElementById('appointmentDept').selectedIndex].text;
+  
+  alert('✅ Terminanfrage gesendet!\n\nIhre Anfrage für:\n' + deptName + '\n\nwurde an die Fachabteilung weitergeleitet. Sie erhalten eine Bestätigung per SMS/E-Mail.');
+  
+  closeModal('requestAppointmentModal');
+  
+  // Clear form
+  document.getElementById('appointmentDept').value = '';
+  document.getElementById('appointmentDate').value = '';
+  document.getElementById('appointmentReason').value = '';
+}
+
+function openModal(id) {
+  document.getElementById(id).classList.add('active');
+}
+
+function closeModal(id) {
+  document.getElementById(id).classList.remove('active');
+}
+
+// Initialize
+renderTasks();
+</script>
+
+</body>
+</html>
