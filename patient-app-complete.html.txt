@@ -1,0 +1,701 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KLIBIZ - Universitätsmedizin Rostock</title>
+<style>
+* {box-sizing: border-box; margin: 0; padding: 0;}
+body {font-family: 'Segoe UI', sans-serif; background: linear-gradient(135deg, #e20074 0%, #c1005f 100%); min-height: 100vh; padding-bottom: 20px;}
+
+.header {background: white; padding: 15px 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);}
+.header h1 {font-size: 1.4em; color: #333; margin-bottom: 3px;}
+.header-subtitle {font-size: 0.8em; color: #666;}
+
+.container {max-width: 600px; margin: 0 auto; padding: 20px;}
+
+.welcome {text-align: center; color: white; padding: 20px 20px 30px 20px;}
+.welcome h2 {font-size: 2em; margin-bottom: 10px; text-shadow: 0 2px 10px rgba(0,0,0,0.2);}
+.welcome p {font-size: 1em; opacity: 0.9; margin-bottom: 10px;}
+
+.status-card {background: rgba(255,255,255,0.95); border-radius: 15px; padding: 20px; margin: 20px 0; box-shadow: 0 5px 20px rgba(0,0,0,0.2); text-align: center;}
+.status-icon {font-size: 3em; margin-bottom: 10px;}
+.status-text {font-size: 1.1em; font-weight: 600; color: #333; margin-bottom: 5px;}
+.status-subtext {font-size: 0.85em; color: #666;}
+
+.contact-section {background: white; border-radius: 20px; padding: 25px; margin: 20px 0; box-shadow: 0 10px 30px rgba(0,0,0,0.2);}
+.section-title {font-size: 1.3em; font-weight: 600; color: #333; margin-bottom: 15px; text-align: center;}
+.contact-buttons {display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-bottom: 20px;}
+.contact-btn {background: linear-gradient(135deg, #e20074 0%, #c1005f 100%); color: white; border: none; border-radius: 15px; padding: 25px 10px; cursor: pointer; transition: all 0.3s; box-shadow: 0 5px 15px rgba(226,0,116,0.3); text-align: center;}
+.contact-btn:hover {transform: translateY(-5px); box-shadow: 0 8px 20px rgba(226,0,116,0.5);}
+.contact-btn:active {transform: translateY(-2px);}
+.contact-icon {font-size: 2.5em; margin-bottom: 10px;}
+.contact-label {font-weight: 600; font-size: 1em;}
+.contact-sublabel {font-size: 0.75em; opacity: 0.9; margin-top: 5px;}
+
+.quick-info {background: #f8f9fa; border-radius: 12px; padding: 15px; margin-top: 15px; border-left: 4px solid #e20074;}
+.quick-info strong {color: #e20074;}
+
+.menu-grid {display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; margin-top: 20px;}
+.menu-card {background: white; border-radius: 15px; padding: 25px 15px; cursor: pointer; box-shadow: 0 5px 15px rgba(0,0,0,0.1); transition: all 0.3s; text-align: center; position: relative;}
+.menu-card:hover {transform: translateY(-5px); box-shadow: 0 8px 20px rgba(0,0,0,0.15);}
+.menu-icon {font-size: 2.5em; margin-bottom: 10px;}
+.menu-title {font-size: 1em; font-weight: 600; color: #333; margin-bottom: 5px;}
+.menu-desc {font-size: 0.8em; color: #666;}
+
+.badge {position: absolute; top: -5px; right: -5px; background: #ff4444; color: white; border-radius: 50%; width: 22px; height: 22px; font-size: 0.7em; display: flex; align-items: center; justify-content: center; font-weight: bold;}
+
+.screen {display: none;}
+.screen.active {display: block;}
+
+.back-btn {background: white; border: none; border-radius: 12px; padding: 12px 20px; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; font-size: 1em; font-weight: 600; color: #e20074; margin-bottom: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.1);}
+
+.content-box {background: white; border-radius: 20px; padding: 25px; box-shadow: 0 10px 40px rgba(0,0,0,0.2); margin-bottom: 20px;}
+.content-box h3 {font-size: 1.4em; color: #333; margin-bottom: 15px;}
+
+.info-card {background: #f8f9fa; border-radius: 12px; padding: 20px; margin: 15px 0; border-left: 4px solid #2196f3;}
+.warning-card {background: #fff3e0; border-radius: 12px; padding: 20px; margin: 15px 0; border-left: 4px solid #ff9800;}
+.danger-card {background: #ffebee; border-radius: 12px; padding: 20px; margin: 15px 0; border-left: 4px solid #f44336;}
+.success-card {background: #e8f5e9; border-radius: 12px; padding: 20px; margin: 15px 0; border-left: 4px solid #4caf50;}
+
+.video-card {background: white; border: 2px solid #e0e0e0; border-radius: 15px; overflow: hidden; margin-bottom: 15px; cursor: pointer; transition: all 0.3s;}
+.video-card:hover {border-color: #e20074; transform: translateY(-3px); box-shadow: 0 5px 15px rgba(0,0,0,0.1);}
+.video-thumb {width: 100%; height: 200px; background: linear-gradient(135deg, #e20074 0%, #c1005f 100%); position: relative; display: flex; align-items: center; justify-content: center;}
+.video-thumb img {width: 100%; height: 100%; object-fit: cover;}
+.play-overlay {position: absolute; width: 70px; height: 70px; background: rgba(255,255,255,0.95); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 2em; color: #e20074;}
+.video-info {padding: 20px;}
+.video-category {display: inline-block; background: #e20074; color: white; padding: 4px 12px; border-radius: 12px; font-size: 0.75em; font-weight: 600; margin-bottom: 10px;}
+.video-title {font-size: 1.1em; font-weight: 600; color: #333; margin-bottom: 8px; line-height: 1.4;}
+.video-description {font-size: 0.9em; color: #666; line-height: 1.5; margin-bottom: 10px;}
+.video-meta {font-size: 0.8em; color: #999; display: flex; gap: 15px;}
+
+.info-section {margin-bottom: 25px;}
+.info-section h4 {color: #e20074; font-size: 1.1em; margin-bottom: 12px;}
+.info-list {list-style: none; padding: 0;}
+.info-list li {padding: 12px; background: #f8f9fa; border-radius: 8px; margin-bottom: 8px; line-height: 1.6;}
+.info-list li::before {content: "✓"; color: #4caf50; font-weight: bold; margin-right: 10px;}
+
+.chat-box {background: white; border-radius: 20px; overflow: hidden; box-shadow: 0 10px 40px rgba(0,0,0,0.2); height: 650px; display: flex; flex-direction: column;}
+.chat-header {background: linear-gradient(135deg, #e20074 0%, #c1005f 100%); color: white; padding: 20px;}
+.chat-header h3 {font-size: 1.3em; margin-bottom: 5px;}
+.chat-header-info {font-size: 0.85em; opacity: 0.9;}
+.chat-messages {flex: 1; padding: 20px; overflow-y: auto; background: #f8f9fa; display: flex; flex-direction: column;}
+.message {margin-bottom: 15px; max-width: 80%; animation: fadeIn 0.3s;}
+.message.sent {margin-left: auto; text-align: right;}
+.message.received {margin-right: auto;}
+.message-bubble {padding: 14px 18px; border-radius: 18px; display: inline-block; line-height: 1.5;}
+.message.sent .message-bubble {background: linear-gradient(135deg, #e20074 0%, #c1005f 100%); color: white; border-bottom-right-radius: 4px;}
+.message.received .message-bubble {background: white; color: #333; box-shadow: 0 2px 8px rgba(0,0,0,0.1); border-bottom-left-radius: 4px;}
+.message-time {font-size: 0.75em; opacity: 0.7; margin-top: 5px;}
+.message-image {max-width: 250px; border-radius: 12px; margin-top: 8px; cursor: pointer;}
+.system-message {background: #e3f2fd; color: #1976d2; padding: 10px 15px; border-radius: 8px; text-align: center; font-size: 0.9em; margin: 10px auto; max-width: 90%;}
+.chat-input-area {padding: 15px; background: white; border-top: 1px solid #e0e0e0; display: flex; gap: 10px; align-items: center;}
+.chat-input-area button {background: #f0f0f0; border: none; border-radius: 50%; width: 40px; height: 40px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 1.2em;}
+.chat-input-area input {flex: 1; padding: 12px 16px; border: 1px solid #e0e0e0; border-radius: 25px; font-size: 1em; font-family: inherit;}
+.send-btn {background: linear-gradient(135deg, #e20074 0%, #c1005f 100%) !important; color: white !important;}
+
+@keyframes fadeIn {
+  from {opacity: 0; transform: translateY(10px);}
+  to {opacity: 1; transform: translateY(0);}
+}
+
+.btn-primary {background: linear-gradient(135deg, #e20074 0%, #c1005f 100%); color: white; border: none; padding: 14px 24px; border-radius: 12px; font-size: 1em; font-weight: 600; cursor: pointer; width: 100%; transition: all 0.2s;}
+.btn-primary:hover {transform: translateY(-2px); box-shadow: 0 5px 15px rgba(226,0,116,0.4);}
+
+.emergency-box {background: linear-gradient(135deg, #f44336 0%, #c62828 100%); color: white; border-radius: 15px; padding: 25px; text-align: center; margin: 20px 0; box-shadow: 0 5px 20px rgba(244,67,54,0.4);}
+.emergency-box h3 {font-size: 1.3em; margin-bottom: 15px;}
+.emergency-number {font-size: 2.5em; font-weight: bold; margin: 15px 0; letter-spacing: 2px;}
+
+.modal {display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 1000; justify-content: center; align-items: center; padding: 20px;}
+.modal.active {display: flex;}
+.modal-content {background: white; border-radius: 20px; padding: 30px; max-width: 600px; width: 100%; max-height: 90vh; overflow-y: auto;}
+.modal-header {display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;}
+.close-modal {background: none; border: none; font-size: 2em; cursor: pointer; color: #999; line-height: 1;}
+
+@media (max-width: 600px) {
+  .contact-buttons {grid-template-columns: 1fr; gap: 12px;}
+  .contact-btn {padding: 20px;}
+  .menu-grid {grid-template-columns: 1fr; gap: 12px;}
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>🏥 KLIBIZ - Telepflege</h1>
+  <div class="header-subtitle">Klinisches Informations- und Beratungszentrum für Pflege<br>Universitätsmedizin Rostock</div>
+</div>
+
+<div class="container">
+  <!-- Welcome/Dashboard Screen -->
+  <div id="welcomeScreen" class="screen active">
+    <div class="welcome">
+      <h2>Guten Tag, Maria! 👋</h2>
+      <p>Ihre Pflegekräfte sind für Sie da</p>
+      
+
+    </div>
+
+    <!-- Main Contact Section -->
+    <div class="contact-section">
+      <div class="section-title">📞 Kontakt zum KLIBIZ-Team</div>
+      
+      <div class="contact-buttons">
+        <button class="contact-btn" onclick="startCall('phone')">
+          <div class="contact-icon">📞</div>
+          <div class="contact-label">Anrufen</div>
+          <div class="contact-sublabel">Sofort sprechen</div>
+        </button>
+        
+        <button class="contact-btn" onclick="showScreen('chat')">
+          <div class="contact-icon">💬</div>
+          <div class="contact-label">Chat</div>
+          <div class="contact-sublabel">Nachricht</div>
+        </button>
+        
+        <button class="contact-btn" onclick="startCall('video')">
+          <div class="contact-icon">📹</div>
+          <div class="contact-label">Video</div>
+          <div class="contact-sublabel">Zeigen</div>
+        </button>
+      </div>
+      
+      <div class="quick-info">
+        <strong>🟢 Erreichbarkeit:</strong> Montag - Freitag, 08:00 - 18:00 Uhr<br>
+        Bei Notfällen außerhalb dieser Zeiten: <strong>112</strong>
+      </div>
+    </div>
+
+    <!-- Menu Grid -->
+    <div class="menu-grid">
+      <div class="menu-card" onclick="showScreen('learn')">
+        <div class="menu-icon">🎓</div>
+        <div class="menu-title">Lernen</div>
+        <div class="menu-desc">Wissen & Videos</div>
+      </div>
+      
+      <div class="menu-card" onclick="showScreen('info')">
+        <div class="menu-icon">ℹ️</div>
+        <div class="menu-title">Meine Krankheit</div>
+        <div class="menu-desc">Herzinsuffizienz</div>
+      </div>
+      
+      <div class="menu-card" onclick="showScreen('warnings')">
+        <div class="menu-icon">⚠️</div>
+        <div class="menu-title">Warnsignale</div>
+        <div class="menu-desc">Wann Hilfe?</div>
+      </div>
+      
+      <div class="menu-card" onclick="showScreen('medication')">
+        <div class="menu-icon">💊</div>
+        <div class="menu-title">Medikamente</div>
+        <div class="menu-desc">Mein Plan</div>
+      </div>
+      
+      <div class="menu-card" onclick="showScreen('appointments')">
+        <span class="badge">1</span>
+        <div class="menu-icon">📅</div>
+        <div class="menu-title">Termine</div>
+        <div class="menu-desc">Arztbesuche</div>
+      </div>
+      
+      <div class="menu-card" onclick="showScreen('emergency')">
+        <div class="menu-icon" style="color: #f44336;">🚨</div>
+        <div class="menu-title" style="color: #f44336;">Notfall</div>
+        <div class="menu-desc">Wichtige Nummern</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Chat Screen -->
+  <div id="chatScreen" class="screen">
+    <button class="back-btn" onclick="showScreen('welcome')">← Zurück</button>
+    <div class="chat-box">
+      <div class="chat-header">
+        <h3>KLIBIZ Pflegekraft</h3>
+        <div class="chat-header-info">🟢 Team ist erreichbar</div>
+      </div>
+      <div class="chat-messages" id="chatMessages"></div>
+      <div class="chat-input-area">
+        <button onclick="document.getElementById('chatPhoto').click()">📷</button>
+        <input type="file" id="chatPhoto" accept="image/*" capture="environment" style="display: none;" onchange="sendPhoto(event)">
+        <input type="text" id="chatInput" placeholder="Nachricht schreiben...">
+        <button class="send-btn" onclick="sendMessage()">➤</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Learning Center -->
+  <div id="learnScreen" class="screen">
+    <button class="back-btn" onclick="showScreen('welcome')">← Zurück</button>
+    <div class="content-box">
+      <h3>🎓 Lern-Center</h3>
+      <p style="color: #666; margin-bottom: 20px;">Verstehen Sie Ihre Erkrankung und lernen Sie, damit umzugehen</p>
+      
+      <div id="videoList"></div>
+    </div>
+  </div>
+
+  <!-- Disease Info -->
+  <div id="infoScreen" class="screen">
+    <button class="back-btn" onclick="showScreen('welcome')">← Zurück</button>
+    <div class="content-box">
+      <h3>ℹ️ Meine Krankheiten</h3>
+      
+      <div class="info-card">
+        <strong style="font-size: 0.9em; color: #666;">Wählen Sie eine Erkrankung aus, um mehr zu erfahren:</strong>
+      </div>
+      
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px;">
+        <button class="disease-selector active" onclick="selectDisease('herzinsuffizienz', this)">
+          <div style="font-size: 1.5em; margin-bottom: 5px;">❤️</div>
+          <strong>Herzinsuffizienz</strong>
+          <div style="font-size: 0.75em; color: #4caf50; margin-top: 5px;">✓ Ihre Hauptdiagnose</div>
+        </button>
+        
+        <button class="disease-selector" onclick="selectDisease('copd', this)">
+          <div style="font-size: 1.5em; margin-bottom: 5px;">🫁</div>
+          <strong>COPD</strong>
+        </button>
+        
+        <button class="disease-selector" onclick="selectDisease('diabetes', this)">
+          <div style="font-size: 1.5em; margin-bottom: 5px;">🩸</div>
+          <strong>Diabetes</strong>
+        </button>
+        
+        <button class="disease-selector" onclick="selectDisease('bluthochdruck', this)">
+          <div style="font-size: 1.5em; margin-bottom: 5px;">💉</div>
+          <strong>Bluthochdruck</strong>
+        </button>
+        
+        <button class="disease-selector" onclick="selectDisease('niereninsuffizienz', this)">
+          <div style="font-size: 1.5em; margin-bottom: 5px;">🫘</div>
+          <strong>Niereninsuffizienz</strong>
+        </button>
+        
+        <button class="disease-selector" onclick="selectDisease('schlaganfall', this)">
+          <div style="font-size: 1.5em; margin-bottom: 5px;">🧠</div>
+          <strong>Schlaganfall</strong>
+        </button>
+      </div>
+      
+      <div id="diseaseContent"></div>
+    </div>
+  </div>
+
+  <!-- Warning Signs -->
+  <div id="warningsScreen" class="screen">
+    <button class="back-btn" onclick="showScreen('welcome')">← Zurück</button>
+    <div class="content-box">
+      <h3>⚠️ Wann brauche ich Hilfe?</h3>
+      
+      <div class="danger-card">
+        <h4 style="color: #c62828; font-size: 1.2em; margin-bottom: 15px;">🚨 SOFORT 112 rufen bei:</h4>
+        <ul style="margin-left: 20px; line-height: 2; font-size: 0.95em;">
+          <li><strong>Starken Brustschmerzen</strong> oder Druck auf der Brust</li>
+          <li><strong>Schwerer Atemnot</strong>, auch in Ruhe oder beim Hinlegen</li>
+          <li><strong>Bewusstlosigkeit</strong> oder starker Verwirrtheit</li>
+          <li><strong>Lähmungserscheinungen</strong> (Gesicht, Arm, Bein)</li>
+          <li><strong>Sprachstörungen</strong></li>
+        </ul>
+      </div>
+      
+      <div class="warning-card">
+        <h4 style="color: #f57c00; font-size: 1.1em; margin-bottom: 15px;">📞 KLIBIZ anrufen bei:</h4>
+        <ul style="margin-left: 20px; line-height: 1.8; font-size: 0.95em;">
+          <li><strong>Gewichtszunahme</strong> um mehr als 1 kg in 2 Tagen</li>
+          <li><strong>Zunehmender Atemnot</strong> bei Belastung</li>
+          <li><strong>Neuen Schwellungen</strong> an Beinen, Füßen oder Bauch</li>
+          <li><strong>Anhaltendem Husten</strong>, besonders nachts</li>
+          <li><strong>Starker Müdigkeit</strong> oder Schwäche</li>
+          <li><strong>Unregelmäßigem Herzschlag</strong> oder Herzrasen</li>
+        </ul>
+      </div>
+      
+      <div class="info-card">
+        <strong>💡 Tipp:</strong> Im Zweifel lieber einmal zu viel anrufen als zu wenig! 
+        Ihre KLIBIZ-Pflegekraft kann Sie beraten und einschätzen, ob ein Arztbesuch nötig ist.
+      </div>
+      
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 20px;">
+        <button class="btn-primary" onclick="startCall('phone')">📞 KLIBIZ anrufen</button>
+        <button class="btn-primary" style="background: linear-gradient(135deg, #f44336 0%, #c62828 100%);" onclick="showScreen('emergency')">🚨 Notfall 112</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Medication -->
+  <div id="medicationScreen" class="screen">
+    <button class="back-btn" onclick="showScreen('welcome')">← Zurück</button>
+    <div class="content-box">
+      <h3>💊 Mein Medikamentenplan</h3>
+      
+      <div class="info-card">
+        <strong>ℹ️ Wichtig:</strong> Dieser Plan wurde von Ihrem Arzt erstellt. 
+        Ändern Sie nichts ohne Rücksprache mit Ihrem Arzt oder der KLIBIZ-Pflegekraft!
+      </div>
+      
+      <div style="background: #f8f9fa; padding: 18px; border-radius: 12px; margin: 15px 0; border-left: 4px solid #4caf50;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+          <strong style="font-size: 1.1em;">Torasemid 10mg</strong>
+          <span style="background: #4caf50; color: white; padding: 4px 10px; border-radius: 12px; font-size: 0.85em; font-weight: 600;">✓ Eingenommen</span>
+        </div>
+        <div style="color: #666; font-size: 0.9em; line-height: 1.6;">
+          🌅 <strong>Morgens</strong> vor dem Frühstück<br>
+          💧 Diuretikum - Entwässerung
+        </div>
+      </div>
+      
+      <div style="background: #f8f9fa; padding: 18px; border-radius: 12px; margin: 15px 0; border-left: 4px solid #4caf50;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+          <strong style="font-size: 1.1em;">Ramipril 5mg</strong>
+          <span style="background: #4caf50; color: white; padding: 4px 10px; border-radius: 12px; font-size: 0.85em; font-weight: 600;">✓ Eingenommen</span>
+        </div>
+        <div style="color: #666; font-size: 0.9em; line-height: 1.6;">
+          🌅 <strong>Morgens</strong> vor dem Frühstück<br>
+          ❤️ ACE-Hemmer - Herzschutz
+        </div>
+      </div>
+      
+      <div style="background: #f8f9fa; padding: 18px; border-radius: 12px; margin: 15px 0; border-left: 4px solid #4caf50;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+          <strong style="font-size: 1.1em;">Bisoprolol 2,5mg</strong>
+          <span style="background: #4caf50; color: white; padding: 4px 10px; border-radius: 12px; font-size: 0.85em; font-weight: 600;">✓ Eingenommen</span>
+        </div>
+        <div style="color: #666; font-size: 0.9em; line-height: 1.6;">
+          🌅 <strong>Morgens</strong> vor dem Frühstück<br>
+          💓 Betablocker - Herzentlastung
+        </div>
+      </div>
+      
+      <div class="warning-card">
+        <strong>⚠️ Bei Nebenwirkungen:</strong> Kontaktieren Sie umgehend Ihre KLIBIZ-Pflegekraft 
+        oder Ihren Arzt. Setzen Sie Medikamente NICHT selbstständig ab!
+      </div>
+      
+      <div style="margin-top: 20px; padding: 18px; background: #f8f9fa; border-radius: 12px;">
+        <strong>📋 Verordnet von:</strong><br>
+        Dr. med. Schmidt, Innere Medizin<br>
+        Universitätsmedizin Rostock<br>
+        <span style="font-size: 0.9em; color: #666;">Erstellt am: 14.10.2025</span>
+      </div>
+      
+      <button class="btn-primary" onclick="showScreen('learn')" style="margin-top: 20px;">
+        🎓 Videos zur Medikamenteneinnahme
+      </button>
+    </div>
+  </div>
+
+  <!-- Appointments -->
+  <div id="appointmentsScreen" class="screen">
+    <button class="back-btn" onclick="showScreen('welcome')">← Zurück</button>
+    <div class="content-box">
+      <h3>📅 Meine Arzttermine</h3>
+      
+      <div class="warning-card">
+        <h4 style="margin-bottom: 10px;">📅 Nächster Termin:</h4>
+        <strong style="font-size: 1.1em;">Zentrum für Innere Medizin - Kardiologie</strong><br>
+        <div style="margin-top: 10px; line-height: 1.8;">
+          🗓️ Morgen, 19.10.2025 um 10:30 Uhr<br>
+          📍 Ernst-Heydemann-Straße 6, 18057 Rostock<br>
+          📋 Routinekontrolle Herzinsuffizienz
+        </div>
+      </div>
+      
+      <div class="info-card">
+        <strong>💡 Tipp:</strong> Notieren Sie sich vorher Fragen für den Arzt. 
+        Ihre KLIBIZ-Pflegekraft kann Sie bei der Vorbereitung unterstützen!
+      </div>
+      
+      <div style="margin-top: 25px;">
+        <h4 style="margin-bottom: 15px;">Weitere Termine:</h4>
+        
+        <div style="background: #f8f9fa; padding: 18px; border-radius: 12px; margin-bottom: 12px;">
+          <strong>Orthopädische Klinik</strong><br>
+          <div style="font-size: 0.9em; color: #666; margin-top: 8px; line-height: 1.6;">
+            📅 25.10.2025 um 14:00 Uhr<br>
+            📍 Doberaner Straße 142, 18057 Rostock<br>
+            📋 Nachkontrolle Kniegelenk
+          </div>
+        </div>
+      </div>
+      
+      <button class="btn-primary" onclick="alert('💬 Bitte wenden Sie sich an Ihre KLIBIZ-Pflegekraft, um einen neuen Termin anzufragen.')">
+        + Termin anfragen (über KLIBIZ)
+      </button>
+    </div>
+  </div>
+
+  <!-- Emergency -->
+  <div id="emergencyScreen" class="screen">
+    <button class="back-btn" onclick="showScreen('welcome')">← Zurück</button>
+    <div class="content-box">
+      <h3>🚨 Notfall-Kontakte</h3>
+      
+      <div class="emergency-box">
+        <h3>Bei lebensbedrohlichen Notfällen</h3>
+        <div class="emergency-number">112</div>
+        <div style="font-size: 0.9em; opacity: 0.9;">
+          Rettungsdienst • Notarzt
+        </div>
+        <button onclick="window.location.href='tel:112'" style="background: white; color: #f44336; border: none; padding: 15px 30px; border-radius: 12px; font-size: 1.1em; font-weight: 600; margin-top: 20px; cursor: pointer;">
+          📞 112 jetzt anrufen
+        </button>
+      </div>
+      
+      <div class="info-card" style="border-left-color: #e20074;">
+        <h4 style="color: #e20074; margin-bottom: 10px;">KLIBIZ Telepflege</h4>
+        <strong>Bei Fragen und gesundheitlichen Problemen</strong><br>
+        <div style="margin: 10px 0; font-size: 1.1em;">
+          📞 <strong>0381 494-12345</strong>
+        </div>
+        <div style="font-size: 0.9em; color: #666;">
+          Mo - Fr: 08:00 - 18:00 Uhr
+        </div>
+        <button onclick="startCall('phone')" class="btn-primary" style="margin-top: 15px;">
+          📞 KLIBIZ jetzt anrufen
+        </button>
+      </div>
+      
+      <div class="info-card">
+        <h4 style="color: #2196f3; margin-bottom: 10px;">Universitätsmedizin Rostock</h4>
+        <strong>Zentrale Notaufnahme</strong><br>
+        <div style="margin: 10px 0;">
+          📞 0381 494-8600<br>
+          📍 Schillingallee 35, 18057 Rostock
+        </div>
+        <button onclick="window.location.href='tel:03814948600'" style="background: #2196f3; color: white; border: none; padding: 12px 24px; border-radius: 12px; font-weight: 600; width: 100%; cursor: pointer; margin-top: 10px;">
+          📞 Notaufnahme anrufen
+        </button>
+      </div>
+      
+      <div class="info-card">
+        <h4 style="color: #666; margin-bottom: 10px;">Weitere wichtige Nummern</h4>
+        <div style="line-height: 2;">
+          <strong>Hausarzt:</strong> Dr. Meyer - 0381 123456<br>
+          <strong>Ärztlicher Bereitschaftsdienst:</strong> 116 117<br>
+          <strong>Giftnotruf:</strong> 0361 730730
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Call Modal -->
+<div class="modal" id="callModal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h3 id="callTitle">📞 Verbindung wird hergestellt...</h3>
+      <button class="close-modal" onclick="closeModal('callModal')">×</button>
+    </div>
+    <div style="text-align: center; padding: 40px 20px;">
+      <div style="font-size: 5em; margin-bottom: 20px;" id="callIcon">📞</div>
+      <div style="font-size: 1.3em; margin-bottom: 15px; font-weight: 600;">KLIBIZ Pflegekraft</div>
+      <div style="color: #666; margin-bottom: 30px;">Bitte warten Sie einen Moment...</div>
+      <button class="btn-primary" onclick="closeModal('callModal')" style="max-width: 300px; background: linear-gradient(135deg, #f44336 0%, #c62828 100%);">
+        Auflegen
+      </button>
+    </div>
+  </div>
+</div>
+
+<script>
+const videos = [
+  {
+    id: 1,
+    category: 'Herzinsuffizienz',
+    title: 'Leben mit Herzinsuffizienz - Die wichtigsten Grundlagen',
+    description: 'Verstehen Sie Ihre Erkrankung: Was passiert im Körper und wie können Sie aktiv mitwirken?',
+    duration: '8:45',
+    views: 892,
+    thumbnail: 'https://images.unsplash.com/photo-1628348068343-c6a848d2b6dd?w=400'
+  },
+  {
+    id: 2,
+    category: 'Selbstkontrolle',
+    title: 'Richtig Gewicht kontrollieren - So gehts!',
+    description: 'Warum tägliches Wiegen so wichtig ist und wie Sie Wassereinlagerungen früh erkennen.',
+    duration: '4:30',
+    views: 654,
+    thumbnail: 'https://images.unsplash.com/photo-1527576539890-dfa815648363?w=400'
+  },
+  {
+    id: 3,
+    category: 'Ernährung',
+    title: 'Salzarme Ernährung leicht gemacht',
+    description: 'Praktische Tipps für herzgesunde Ernährung im Alltag - lecker und einfach.',
+    duration: '12:20',
+    views: 1243,
+    thumbnail: 'https://images.unsplash.com/photo-1490645935967-10de6ba17061?w=400'
+  },
+  {
+    id: 4,
+    category: 'Selbstkontrolle',
+    title: 'Trinkmenge richtig dokumentieren',
+    description: 'Wie Sie Ihre Flüssigkeitszufuhr im Blick behalten und warum das wichtig ist.',
+    duration: '5:15',
+    views: 432,
+    thumbnail: 'https://images.unsplash.com/photo-1548839140-29a749e1cf4d?w=400'
+  },
+  {
+    id: 5,
+    category: 'Medikamente',
+    title: 'Medikamente bei Herzinsuffizienz verstehen',
+    description: 'Welche Medikamente warum wichtig sind und wie sie wirken.',
+    duration: '10:30',
+    views: 789,
+    thumbnail: 'https://images.unsplash.com/photo-1471864190281-a93a3070b6de?w=400'
+  },
+  {
+    id: 6,
+    category: 'Warnsignale',
+    title: 'Warnsignale erkennen und richtig handeln',
+    description: 'Wann müssen Sie reagieren? Was sind echte Notfälle? Ein Leitfaden für den Alltag.',
+    duration: '7:15',
+    views: 678,
+    thumbnail: 'https://images.unsplash.com/photo-1516549655169-df83a0774514?w=400'
+  }
+];
+
+const messages = [
+  {from: 'system', text: 'Chat mit KLIBIZ Pflegekraft gestartet'},
+  {from: 'nurse', text: 'Guten Tag Frau Müller! Hier ist Ihre KLIBIZ-Pflegekraft. Wie kann ich Ihnen heute helfen?', time: '14:32'},
+  {from: 'patient', text: 'Hallo! Ich habe eine Frage zu meinen Medikamenten.', time: '14:35'}
+];
+
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id + 'Screen').classList.add('active');
+  
+  if (id === 'chat') renderChat();
+  if (id === 'learn') renderVideos();
+}
+
+function renderVideos() {
+  const list = document.getElementById('videoList');
+  list.innerHTML = videos.map(v => `
+    <div class="video-card" onclick="playVideo(${v.id})">
+      <div class="video-thumb">
+        <img src="${v.thumbnail}" alt="${v.title}">
+        <div class="play-overlay">▶</div>
+      </div>
+      <div class="video-info">
+        <span class="video-category">${v.category}</span>
+        <div class="video-title">${v.title}</div>
+        <div class="video-description">${v.description}</div>
+        <div class="video-meta">
+          <span>👁️ ${v.views} Aufrufe</span>
+          <span>⏱️ ${v.duration}</span>
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function playVideo(id) {
+  const video = videos.find(v => v.id === id);
+  alert(`🎥 Video wird abgespielt:\n\n"${video.title}"\n\nDauer: ${video.duration}`);
+}
+
+function renderChat() {
+  const box = document.getElementById('chatMessages');
+  box.innerHTML = messages.map(m => {
+    if (m.from === 'system') {
+      return `<div class="system-message">${m.text}</div>`;
+    }
+    return `
+      <div class="message ${m.from === 'patient' ? 'sent' : 'received'}">
+        <div class="message-bubble">
+          ${m.text}
+          ${m.image ? `<img src="${m.image}" class="message-image">` : ''}
+        </div>
+        ${m.time ? `<div class="message-time">${m.time}</div>` : ''}
+      </div>
+    `;
+  }).join('');
+  box.scrollTop = box.scrollHeight;
+}
+
+function sendMessage() {
+  const input = document.getElementById('chatInput');
+  if (input.value.trim()) {
+    const time = new Date().toLocaleTimeString('de-DE', {hour: '2-digit', minute: '2-digit'});
+    messages.push({from: 'patient', text: input.value, time});
+    renderChat();
+    input.value = '';
+    
+    setTimeout(() => {
+      messages.push({
+        from: 'nurse', 
+        text: 'Vielen Dank für Ihre Nachricht. Ich schaue mir das an und melde mich gleich bei Ihnen.',
+        time: new Date().toLocaleTimeString('de-DE', {hour: '2-digit', minute: '2-digit'})
+      });
+      renderChat();
+    }, 2000);
+  }
+}
+
+function sendPhoto(event) {
+  const file = event.target.files[0];
+  if (file) {
+    const time = new Date().toLocaleTimeString('de-DE', {hour: '2-digit', minute: '2-digit'});
+    messages.push({
+      from: 'patient',
+      text: '📸 Foto gesendet',
+      image: URL.createObjectURL(file),
+      time
+    });
+    renderChat();
+    
+    setTimeout(() => {
+      messages.push({
+        from: 'nurse',
+        text: 'Danke für das Foto! Ich schaue es mir gleich an und rufe Sie zurück, falls nötig.',
+        time: new Date().toLocaleTimeString('de-DE', {hour: '2-digit', minute: '2-digit'})
+      });
+      renderChat();
+    }, 3000);
+  }
+}
+
+function startCall(type) {
+  const modal = document.getElementById('callModal');
+  const title = document.getElementById('callTitle');
+  const icon = document.getElementById('callIcon');
+  
+  if (type === 'video') {
+    title.textContent = '📹 Videoanruf wird gestartet...';
+    icon.textContent = '📹';
+  } else {
+    title.textContent = '📞 Anruf wird gestartet...';
+    icon.textContent = '📞';
+  }
+  
+  modal.classList.add('active');
+  
+  setTimeout(() => {
+    if (type === 'video') {
+      alert('📹 VIDEOANRUF VERBUNDEN\n\nSie sind jetzt mit einer KLIBIZ-Pflegekraft verbunden.\n\nTipps:\n• Gutes Licht (am Fenster)\n• Kamera auf betroffene Stelle richten\n• Deutlich sprechen');
+    } else {
+      alert('📞 ANRUF VERBUNDEN\n\nSie sprechen jetzt mit einer KLIBIZ-Pflegekraft.\n\nKLIBIZ - Universitätsmedizin Rostock');
+    }
+    closeModal('callModal');
+  }, 2000);
+}
+
+function closeModal(id) {
+  document.getElementById(id).classList.remove('active');
+}
+
+// Initialize
+renderChat();
+renderVideos();
+
+// Enter key for chat
+document.getElementById('chatInput')?.addEventListener('keypress', e => {
+  if (e.key === 'Enter') sendMessage();
+});
+</script>
+
+</body>
+</html>
